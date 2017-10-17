@@ -345,6 +345,22 @@ function graphDirective($rootScope, timeSrv, popoverSrv, contextSrv) {
 
         sortedSeries = _.sortBy(data, function(series) { return series.zindex; });
 
+        var sortBy = ctrl.panel.legend.sort;
+        var desc = ctrl.panel.legend.sortDesc === true ? 1 : -1;
+        var sortAsLegend = ctrl.panel.sortAsLegend;
+        if (sortAsLegend && !!sortBy) {
+          sortedSeries.sort((x, y) => {
+            if (x.stats[sortBy] > y.stats[sortBy]) {
+              return 1 * desc;
+            }
+            if (x.stats[sortBy] < y.stats[sortBy]) {
+              return -1 * desc;
+            }
+
+            return 0;
+          });
+        }
+
         function callPlot(incrementRenderCounter) {
           try {
             plot = $.plot(elem, sortedSeries, options);
